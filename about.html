@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --gold:#F5B942; --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Space Grotesk',sans-serif; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{ color:inherit; text-decoration:none; }
+  body::before{ content:""; position:fixed; inset:0; background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size:56px 56px; opacity:0.1; pointer-events:none; z-index:0; }
+
+  header{ position:sticky; top:0; z-index:50; background:rgba(8,8,13,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1240px; margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:36px; height:36px; border-radius:9px; background:linear-gradient(135deg,var(--violet),var(--cyan)); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:700; font-size:18px; color:#08080D; }
+  .logo-text{ font-family:'Space Grotesk'; font-weight:700; font-size:17px; }
+  nav.links{ display:flex; gap:36px; }
+  nav.links a{ font-size:14px; font-weight:500; color:var(--text-dim); }
+  nav.links a:hover{ color:var(--text); }
+  .login-btn{ padding:9px 20px; border-radius:9px; font-size:13px; font-weight:600; background:linear-gradient(135deg,var(--violet),#5B3DE0); color:#fff; }
+
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+
+  .hero{ padding:80px 32px 60px; text-align:center; position:relative; z-index:1; }
+  .hero .tag{ font-family:'JetBrains Mono'; font-size:12px; letter-spacing:2px; color:var(--cyan); margin-bottom:16px; display:block; }
+  .hero h1{ font-size:clamp(30px,5vw,48px); font-weight:700; letter-spacing:-1px; margin-bottom:18px; }
+  .hero h1 .grad{ background:linear-gradient(100deg,var(--violet),var(--cyan)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero p{ font-size:15px; color:var(--text-dim); max-width:560px; margin:0 auto; line-height:1.8; }
+
+  .stat-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; max-width:1000px; margin:0 auto; padding:0 32px 70px; position:relative; z-index:1; }
+  .stat{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; text-align:center; }
+  .stat .num{ font-family:'Space Grotesk'; font-size:26px; font-weight:700; background:linear-gradient(100deg,var(--violet),var(--cyan)); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:6px; }
+  .stat .lbl{ font-size:11.5px; color:var(--text-faint); font-family:'JetBrains Mono'; letter-spacing:0.5px; }
+
+  .section{ padding:60px 32px; position:relative; z-index:1; }
+  .section h2{ font-size:26px; margin-bottom:18px; }
+  .section p{ font-size:14.5px; color:var(--text-dim); line-height:1.9; margin-bottom:14px; max-width:720px; }
+
+  .value-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:28px; }
+  .value-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:24px; }
+  .value-card .icn{ font-size:26px; margin-bottom:14px; }
+  .value-card h4{ font-size:15px; margin-bottom:8px; }
+  .value-card p{ font-size:13px; color:var(--text-dim); line-height:1.7; margin:0; }
+
+  .timeline{ margin-top:24px; }
+  .tl-item{ display:flex; gap:20px; margin-bottom:24px; }
+  .tl-item .yr{ width:70px; flex-shrink:0; font-family:'JetBrains Mono'; font-size:13px; color:var(--cyan); font-weight:600; padding-top:2px; }
+  .tl-item .body{ border-left:1px solid var(--line); padding-left:20px; padding-bottom:4px; }
+  .tl-item .body h4{ font-size:14.5px; margin-bottom:4px; }
+  .tl-item .body p{ font-size:13px; color:var(--text-dim); margin:0; }
+
+  footer{ border-top:1px solid var(--line); padding:50px 32px 28px; text-align:center; position:relative; z-index:1; }
+  footer .fmark{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+  footer p{ font-size:12px; color:var(--text-faint); font-family:'JetBrains Mono'; }
+
+  @media(max-width:900px){
+    nav.links{ display:none; }
+    .stat-row{ grid-template-columns:repeat(2,1fr); }
+    .value-grid{ grid-template-columns:1fr; }
+  }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a href="index.html" class="logo"><div class="logo-mark">V</div><div class="logo-text">VIKAS GAMING STORE</div></a>
+    <nav class="links">
+      <a href="index.html">Home</a><a href="index.html#shop">Shop</a><a href="about.html">About Us</a><a href="contact.html">Contact</a>
+    </nav>
+    <a href="auth.html" class="login-btn">Login</a>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="tag">OUR STORY</span>
+  <h1>Built by Gamers, <span class="grad">For Gamers</span></h1>
+  <p>Vikas Gaming Store is India's trusted destination for genuine PlayStation consoles, controllers, games and accessories — every listing checked, every warranty honoured.</p>
+</section>
+
+<div class="stat-row">
+  <div class="stat"><div class="num">3,000+</div><div class="lbl">HAPPY CUSTOMERS</div></div>
+  <div class="stat"><div class="num">1,200+</div><div class="lbl">ORDERS DELIVERED</div></div>
+  <div class="stat"><div class="num">146+</div><div class="lbl">PRODUCTS LISTED</div></div>
+  <div class="stat"><div class="num">4.8★</div><div class="lbl">AVERAGE RATING</div></div>
+</div>
+
+<section class="section wrap">
+  <h2>Who We Are</h2>
+  <p>We started Vikas Gaming Store with a simple goal — make genuine PlayStation gear easy to find and trust, whether you're buying your first console or your fifth controller. Every console we sell, new or pre-owned, is inspected and graded before it reaches you, with real warranty backing every purchase.</p>
+  <p>From PS1 collectibles to the latest PS5 Pro, we cover the full PlayStation lineup along with controllers, games and accessories — all in one place, at fair prices.</p>
+</section>
+
+<section class="section wrap">
+  <h2>What We Stand For</h2>
+  <div class="value-grid">
+    <div class="value-card">
+      <div class="icn">✅</div>
+      <h4>Verified Condition</h4>
+      <p>Every pre-owned console is tested and graded before listing — no surprises on arrival.</p>
+    </div>
+    <div class="value-card">
+      <div class="icn">🛡️</div>
+      <h4>Real Warranty</h4>
+      <p>Store warranty on every console and accessory, backed by responsive support.</p>
+    </div>
+    <div class="value-card">
+      <div class="icn">🚚</div>
+      <h4>Fast, Safe Delivery</h4>
+      <p>Carefully packed shipments with tracking, delivered across India.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <h2>Our Journey</h2>
+  <div class="timeline">
+    <div class="tl-item"><div class="yr">2021</div><div class="body"><h4>Started as a small pre-owned console reseller</h4><p>Began with a handful of PS4 units, focused on honest grading and fair pricing.</p></div></div>
+    <div class="tl-item"><div class="yr">2023</div><div class="body"><h4>Expanded into controllers, games &amp; accessories</h4><p>Grew the catalog to cover the full PlayStation ecosystem.</p></div></div>
+    <div class="tl-item"><div class="yr">2026</div><div class="body"><h4>Launched online store with PS5 Pro in stock</h4><p>Brought the full lineup — PS1 through PS5 Pro — online with nationwide delivery.</p></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fmark">
+    <div class="logo-mark">V</div>
+    <div class="logo-text">VIKAS GAMING STORE</div>
+  </div>
+  <p>© 2026 VIKAS GAMING STORE. ALL RIGHTS RESERVED.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Space Grotesk',sans-serif; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{ color:inherit; text-decoration:none; }
+  body::before{ content:""; position:fixed; inset:0; background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size:56px 56px; opacity:0.1; pointer-events:none; z-index:0; }
+
+  header{ position:sticky; top:0; z-index:50; background:rgba(8,8,13,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1240px; margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:36px; height:36px; border-radius:9px; background:linear-gradient(135deg,var(--violet),var(--cyan)); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:700; font-size:18px; color:#08080D; }
+  .logo-text{ font-family:'Space Grotesk'; font-weight:700; font-size:17px; }
+  nav.links{ display:flex; gap:36px; }
+  nav.links a{ font-size:14px; font-weight:500; color:var(--text-dim); }
+  nav.links a:hover{ color:var(--text); }
+  .login-btn{ padding:9px 20px; border-radius:9px; font-size:13px; font-weight:600; background:linear-gradient(135deg,var(--violet),#5B3DE0); color:#fff; }
+
+  .hero{ padding:60px 32px 10px; text-align:center; position:relative; z-index:1; }
+  .hero .tag{ font-family:'JetBrains Mono'; font-size:12px; letter-spacing:2px; color:var(--cyan); margin-bottom:14px; display:block; }
+  .hero h1{ font-size:clamp(28px,5vw,40px); font-weight:700; letter-spacing:-1px; margin-bottom:10px; }
+  .hero .updated{ font-size:12px; color:var(--text-faint); font-family:'JetBrains Mono'; }
+
+  .doc{ max-width:800px; margin:0 auto; padding:50px 32px 90px; position:relative; z-index:1; }
+  .doc-card{ background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:40px; }
+  .doc-card h2{ font-size:17px; margin:28px 0 12px; }
+  .doc-card h2:first-child{ margin-top:0; }
+  .doc-card p{ font-size:14px; color:var(--text-dim); line-height:1.85; margin-bottom:10px; }
+  .doc-card ul{ margin:10px 0 10px 20px; }
+  .doc-card li{ font-size:14px; color:var(--text-dim); line-height:1.85; margin-bottom:6px; }
+  .toc{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:34px; }
+  .toc a{ font-size:12px; font-family:'JetBrains Mono'; color:var(--cyan); background:var(--cyan-dim); border:1px solid #22D3F540; padding:6px 12px; border-radius:100px; }
+
+  footer{ border-top:1px solid var(--line); padding:50px 32px 28px; text-align:center; position:relative; z-index:1; }
+  footer .fmark{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+  footer p{ font-size:12px; color:var(--text-faint); font-family:'JetBrains Mono'; }
+
+  @media(max-width:900px){ nav.links{ display:none; } }
+  @media(max-width:560px){ .doc-card{ padding:26px 20px; } }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a href="index.html" class="logo"><div class="logo-mark">V</div><div class="logo-text">VIKAS GAMING STORE</div></a>
+    <nav class="links">
+      <a href="index.html">Home</a><a href="index.html#shop">Shop</a><a href="about.html">About Us</a><a href="contact.html">Contact</a>
+    </nav>
+    <a href="auth.html" class="login-btn">Login</a>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="tag">LEGAL</span>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: 29 July 2026</div>
+</section>
+
+<div class="doc">
+  <div class="doc-card">
+    <div class="toc">
+      <a href="#collect">Info We Collect</a>
+      <a href="#use">How We Use It</a>
+      <a href="#payment">Payment Data</a>
+      <a href="#sharing">Sharing</a>
+      <a href="#security">Security</a>
+      <a href="#rights">Your Rights</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <h2 id="collect">1. Information We Collect</h2>
+    <p>When you shop with Vikas Gaming Store, we collect information you provide directly, such as your name, mobile number, email address, delivery address, and order details. We also collect basic usage data like pages visited and items viewed, to help us improve the store.</p>
+
+    <h2 id="use">2. How We Use Your Information</h2>
+    <ul>
+      <li>To process and deliver your orders</li>
+      <li>To send order updates, tracking information, and support messages (including via WhatsApp)</li>
+      <li>To respond to your queries and provide customer support</li>
+      <li>To improve our product catalog, pricing, and site experience</li>
+    </ul>
+
+    <h2 id="payment">3. Payment Information</h2>
+    <p>Pre-booking payments are made directly by you via UPI to our published UPI ID / QR code. We do not store your UPI PIN, bank account details, or card numbers. You may be asked to share your UPI transaction ID (UTR) to confirm your payment — this is used solely to verify and process your order.</p>
+
+    <h2 id="sharing">4. Sharing of Information</h2>
+    <p>We do not sell your personal information. Your details may be shared with delivery partners solely to fulfil your order, or disclosed if required by law.</p>
+
+    <h2 id="security">5. Data Security</h2>
+    <p>We take reasonable technical and organisational measures to protect your information from unauthorised access, alteration, or disclosure. However, no method of online transmission is completely secure, and we cannot guarantee absolute security.</p>
+
+    <h2 id="rights">6. Your Rights</h2>
+    <p>You may request access to, correction of, or deletion of your personal information at any time by contacting our support team. You can also update your saved addresses and profile details directly from your account dashboard.</p>
+
+    <h2 id="contact">7. Contact Us</h2>
+    <p>For any privacy-related questions, reach out at support@vikasgamingstore.in or via WhatsApp on our Contact page.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="fmark"><div class="logo-mark">V</div><div class="logo-text">VIKAS GAMING STORE</div></div>
+  <p>© 2026 VIKAS GAMING STORE. ALL RIGHTS RESERVED.</p>
+</footer>
+
+</body>
+</html>
