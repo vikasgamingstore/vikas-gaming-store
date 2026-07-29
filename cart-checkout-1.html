@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart & Checkout — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --gold:#F5B942; --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+    --green:#4ADE80; --red:#F87171;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; }
+  h1,h2,h3{ font-family:'Space Grotesk',sans-serif; }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  a{color:inherit; text-decoration:none;}
+  input,select{ font-family:'Inter',sans-serif; }
+
+  header{ position:sticky; top:0; z-index:50; background:rgba(8,8,13,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1240px; margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:36px; height:36px; border-radius:9px; background:linear-gradient(135deg,var(--violet),var(--cyan)); display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:700; font-size:18px; color:#08080D; }
+  .logo-text{ font-family:'Space Grotesk'; font-weight:700; font-size:17px; }
+
+  .wrap{ max-width:1100px; margin:0 auto; padding:44px 32px 100px; }
+
+  /* step indicator */
+  .steps{ display:flex; align-items:center; gap:0; margin-bottom:48px; }
+  .step{ display:flex; align-items:center; gap:10px; }
+  .step .num{ width:30px; height:30px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; font-family:'JetBrains Mono'; color:var(--text-faint); }
+  .step.active .num{ border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 10px var(--cyan-dim); }
+  .step.done .num{ background:var(--cyan); border-color:var(--cyan); color:#08080D; }
+  .step span.lbl{ font-size:13px; color:var(--text-faint); font-weight:600; }
+  .step.active span.lbl{ color:var(--text); }
+  .step-line{ width:60px; height:1px; background:var(--line); margin:0 14px; }
+
+  .layout{ display:grid; grid-template-columns:1.6fr 1fr; gap:32px; align-items:start; }
+
+  h2.page-title{ font-size:26px; margin-bottom:28px; }
+
+  /* cart items */
+  .cart-item{ display:flex; gap:16px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; align-items:center; }
+  .cart-item .thumb{ width:66px; height:66px; border-radius:10px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+  .ci-body{ flex:1; }
+  .ci-body h4{ font-size:14px; margin-bottom:4px; }
+  .ci-body .cond{ font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono'; }
+  .qty-box{ display:flex; align-items:center; border:1px solid var(--line); border-radius:9px; overflow:hidden; }
+  .qty-box button{ width:30px; height:32px; background:var(--surface-2); border:none; color:var(--text); cursor:pointer; }
+  .qty-box span{ width:32px; text-align:center; font-size:13px; font-weight:600; }
+  .ci-price{ width:80px; text-align:right; font-weight:700; font-family:'Space Grotesk'; font-size:15px; }
+  .ci-remove{ color:var(--text-faint); cursor:pointer; font-size:16px; }
+  .ci-remove:hover{ color:var(--red); }
+
+  /* checkout form */
+  .form-card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:26px; margin-bottom:20px; }
+  .form-card h3{ font-size:15px; margin-bottom:18px; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1/-1; }
+  .field label{ font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono'; letter-spacing:0.5px; }
+  .field input{ background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:11px 13px; color:var(--text); font-size:13px; }
+  .field input:focus{ outline:none; border-color:var(--cyan); }
+
+  .pay-options{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .pay-opt{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:14px 10px; text-align:center; cursor:pointer; font-size:12px; font-weight:600; }
+  .pay-opt.selected{ border-color:var(--violet); box-shadow:0 0 0 1px var(--violet); }
+  .pay-opt .icn{ font-size:20px; margin-bottom:6px; display:block; }
+
+  .qr-block{ display:flex; gap:20px; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:16px; }
+  .qr-img{ width:130px; height:130px; flex-shrink:0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; background-image:
+      linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #000 75%), linear-gradient(-45deg, transparent 75%, #000 75%);
+      background-size:16px 16px; background-position:0 0, 0 8px, 8px -8px, -8px 0px; background-color:#fff; opacity:0.94; }
+  .qr-img span{ background:#fff; padding:6px 8px; border-radius:4px; }
+  .qr-details{ flex:1; }
+  .qr-amount-lbl{ font-size:10px; font-family:'JetBrains Mono'; letter-spacing:1.5px; color:var(--text-faint); margin-bottom:4px; }
+  .qr-amount{ font-size:30px; font-weight:700; font-family:'Space Grotesk'; color:var(--cyan); margin-bottom:10px; }
+  .qr-upi{ font-size:12px; color:var(--text-dim); margin-bottom:6px; }
+  .qr-note{ font-size:12px; color:var(--text-dim); }
+  .qr-note strong{ color:var(--text); }
+  .paid-check{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-dim); cursor:pointer; }
+  .paid-check input{ width:16px; height:16px; accent-color:var(--cyan); cursor:pointer; }
+  .btn-checkout:disabled{ opacity:0.4; cursor:not-allowed; box-shadow:none; }
+  .btn-wa{ width:100%; padding:13px; border-radius:11px; font-weight:600; font-size:13.5px; background:#25D36622; color:#25D366; border:1px solid #25D36655; cursor:pointer; margin-top:16px; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn-wa:hover{ background:#25D36633; }
+
+  /* summary */
+  .summary{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:26px; position:sticky; top:100px; }
+  .summary h3{ font-size:15px; margin-bottom:18px; }
+  .sum-row{ display:flex; justify-content:space-between; font-size:13px; color:var(--text-dim); padding:8px 0; }
+  .sum-row.total{ border-top:1px solid var(--line); margin-top:8px; padding-top:16px; font-size:16px; font-weight:700; color:var(--text); }
+  .coupon{ display:flex; gap:8px; margin:16px 0; }
+  .coupon input{ flex:1; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:10px 12px; color:var(--text); font-size:12px; }
+  .coupon button{ padding:0 16px; border-radius:9px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-size:12px; font-weight:600; cursor:pointer; }
+  .btn-checkout{ width:100%; padding:15px; border-radius:11px; font-weight:600; font-size:14px; background:linear-gradient(135deg,var(--violet),var(--cyan)); color:#08080D; border:none; cursor:pointer; margin-top:16px; box-shadow:0 0 30px var(--violet-dim); }
+
+  /* order confirmation */
+  .confirm{ text-align:center; padding:60px 20px; }
+  .confirm .tick{ width:74px; height:74px; border-radius:50%; background:var(--cyan-dim); border:1px solid var(--cyan); display:flex; align-items:center; justify-content:center; font-size:32px; margin:0 auto 24px; color:var(--cyan); }
+  .confirm h2{ font-size:26px; margin-bottom:10px; }
+  .confirm p{ color:var(--text-dim); font-size:14px; margin-bottom:32px; }
+  .order-card{ max-width:460px; margin:0 auto; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px; text-align:left; }
+  .order-card .row{ display:flex; justify-content:space-between; font-size:13px; padding:9px 0; border-bottom:1px solid var(--line); }
+  .order-card .row:last-child{ border-bottom:none; }
+  .order-card .row span:first-child{ color:var(--text-faint); font-family:'JetBrains Mono'; font-size:11px; }
+  .tag-status{ font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; background:var(--green); color:#08080D; }
+
+  section.view{ display:none; }
+  section.view.active{ display:block; }
+
+  @media(max-width:840px){
+    .layout{ grid-template-columns:1fr; }
+    .form-grid{ grid-template-columns:1fr; }
+    .pay-options{ grid-template-columns:repeat(2,1fr); }
+    .steps{ flex-wrap:wrap; }
+    .step-line{ width:24px; }
+  }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <div class="logo"><div class="logo-mark">V</div><div class="logo-text">VIKAS GAMING STORE</div></div>
+    <a href="index.html" style="font-size:13px;color:var(--text-dim);">← Continue Shopping</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="steps">
+    <div class="step" id="step1"><div class="num">1</div><span class="lbl">Cart</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="step2"><div class="num">2</div><span class="lbl">Checkout</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="step3"><div class="num">3</div><span class="lbl">Confirmation</span></div>
+  </div>
+
+  <!-- CART VIEW -->
+  <section class="view active" id="view-cart">
+    <h2 class="page-title" id="cartTitle">Your Cart</h2>
+    <div class="layout">
+      <div id="cartItemsWrap">
+        <div id="cartEmptyMsg" style="display:none; text-align:center; padding:60px 20px; color:var(--text-faint);">
+          Your cart is empty. <a href="index.html" style="color:var(--cyan);">Continue shopping →</a>
+        </div>
+      </div>
+
+      <div class="summary">
+        <h3>Order Summary</h3>
+        <div class="sum-row"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+        <div class="sum-row"><span>Delivery</span><span style="color:var(--green);">Free</span></div>
+        <div class="sum-row total"><span>Total</span><span id="cartGrandTotal">₹0</span></div>
+        <button class="btn-checkout" id="proceedBtn" onclick="goTo('checkout')">Proceed to Checkout</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKOUT VIEW -->
+  <section class="view" id="view-checkout">
+    <h2 class="page-title">Checkout</h2>
+    <div class="layout">
+      <div>
+        <div class="form-card">
+          <h3>Delivery Details</h3>
+          <div class="form-grid">
+            <div class="field"><label>FULL NAME</label><input id="d-name" placeholder="Enter your name"></div>
+            <div class="field"><label>MOBILE NUMBER</label><input id="d-mobile" placeholder="+91"></div>
+            <div class="field full"><label>EMAIL</label><input id="d-email" placeholder="you@example.com"></div>
+            <div class="field full"><label>FULL ADDRESS</label><input id="d-address" placeholder="House no, street, area"></div>
+            <div class="field"><label>CITY</label><input id="d-city" placeholder="City"></div>
+            <div class="field"><label>STATE</label><input id="d-state" placeholder="State"></div>
+            <div class="field"><label>PIN CODE</label><input id="d-pin" placeholder="6-digit PIN"></div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3>Pre-Booking Payment</h3>
+          <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:18px; line-height:1.7;">
+            Scan the QR code below and pay the pre-booking amount via any UPI app to confirm your order.
+            The remaining balance is payable as <strong style="color:var(--text);">Cash on Delivery</strong>.
+          </p>
+          <div class="qr-block">
+            <div class="qr-img" id="qrImg">
+              <span id="qrImgPlaceholder" style="font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono';">QR CODE<br>(set by admin)</span>
+            </div>
+            <div class="qr-details">
+              <div class="qr-amount-lbl">SCAN &amp; PAY</div>
+              <div class="qr-amount" id="prebookAmt">₹3,000</div>
+              <div class="qr-upi">UPI ID: <span class="mono" id="upiId">vikasgamingstore@upi</span></div>
+              <div class="qr-note">Payable Cash on Delivery: <strong id="codAmt">₹50,497</strong></div>
+            </div>
+          </div>
+          <label class="paid-check">
+            <input type="checkbox" id="paidConfirm" onchange="checkFormValid();">
+            <span>I have paid the <strong id="feeInlineLbl">booking</strong> amount via UPI</span>
+          </label>
+
+          <div class="field" style="margin-top:16px;">
+            <label>UPI TRANSACTION ID / UTR NUMBER</label>
+            <input type="text" id="utrInput" placeholder="e.g. 402812345678" oninput="checkFormValid();">
+          </div>
+          <div class="field" style="margin-top:12px;">
+            <label>PAYMENT SCREENSHOT (OPTIONAL)</label>
+            <input type="file" id="screenshotInput" accept="image/*">
+          </div>
+
+          <button class="btn-wa" id="waBtn" onclick="sendOnWhatsApp()">
+            <span style="font-size:16px;">💬</span> Send Payment Proof on WhatsApp
+          </button>
+          <p style="font-size:11.5px; color:var(--text-faint); margin-top:8px; line-height:1.6;">
+            Tap above to open WhatsApp with your Order ID, amount &amp; UTR pre-filled — send it to our support number for instant confirmation.
+          </p>
+        </div>
+      </div>
+
+      <div class="summary">
+        <h3>Order Summary</h3>
+        <div class="sum-row"><span id="itemsCountLbl">Items</span><span id="itemsTotalLbl">₹0</span></div>
+        <div class="sum-row"><span>Delivery</span><span style="color:var(--green);">Free</span></div>
+        <div class="sum-row"><span>Booking Fee (Pay Now · UPI)</span><span style="color:var(--cyan);" id="feeAmtLbl">₹0</span></div>
+        <div class="sum-row"><span>Balance (Cash on Delivery)</span><span id="balanceAmtLbl">₹0</span></div>
+        <div class="sum-row total"><span>Total</span><span id="checkoutTotalLbl">₹0</span></div>
+        <button class="btn-checkout" id="placeOrderBtn" onclick="placeOrder()" disabled>Confirm Booking</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIRMATION VIEW -->
+  <section class="view" id="view-confirm">
+    <div class="confirm">
+      <div class="tick">✓</div>
+      <h2>Order Placed Successfully!</h2>
+      <p>A confirmation has been sent to your email and mobile number.</p>
+      <div class="order-card">
+        <div class="row"><span>ORDER ID</span><span class="mono" id="confirmOrderId">—</span></div>
+        <div class="row"><span>PRODUCTS</span><span id="confirmProducts">—</span></div>
+        <div class="row"><span>TOTAL AMOUNT</span><span id="confirmTotal">—</span></div>
+        <div class="row"><span>BOOKING FEE</span><span class="tag-status" id="confirmFee">—</span></div>
+        <div class="row"><span>UTR / TXN ID</span><span class="mono" id="confirmUtr">—</span></div>
+        <div class="row"><span>BALANCE DUE</span><span id="confirmBalance">—</span></div>
+        <div class="row"><span>DELIVERY STATUS</span><span class="tag-status" style="background:var(--gold);">PROCESSING</span></div>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:28px; max-width:460px; margin-left:auto; margin-right:auto;">
+        <a href="customer-dashboard.html" class="btn-checkout" style="margin-top:0; display:flex; align-items:center; justify-content:center;">Track My Order</a>
+        <a href="index.html" style="flex:1; padding:15px; border-radius:11px; font-weight:600; font-size:14px; background:var(--surface-2); color:var(--text); border:1px solid var(--line); display:flex; align-items:center; justify-content:center;">Continue Shopping</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let storeSettings = null;
+
+function bookingFeeFor(subtotal){
+  if(!storeSettings) return 0;
+  if(storeSettings.booking_fee_type === 'percent'){
+    return Math.round(subtotal * (Number(storeSettings.booking_fee_value) || 0) / 100);
+  }
+  return Number(storeSettings.booking_fee_value) || 0;
+}
+
+function renderCartView(){
+  const cart = getCart();
+  const wrap = document.getElementById('cartItemsWrap');
+  document.getElementById('cartTitle').textContent = `Your Cart (${cart.length} item${cart.length===1?'':'s'})`;
+
+  if(cart.length === 0){
+    wrap.innerHTML = `<div style="text-align:center; padding:60px 20px; color:var(--text-faint);">Your cart is empty. <a href="index.html" style="color:var(--cyan);">Continue shopping →</a></div>`;
+    document.getElementById('proceedBtn').disabled = true;
+    document.getElementById('proceedBtn').style.opacity = '0.4';
+  } else {
+    document.getElementById('proceedBtn').disabled = false;
+    document.getElementById('proceedBtn').style.opacity = '1';
+    wrap.innerHTML = cart.map(i => `
+      <div class="cart-item">
+        <div class="thumb"${i.image_url ? ` style="background-image:url('${i.image_url}'); background-size:cover; background-position:center;"` : ''}>${i.image_url ? '' : (CATEGORY_ICONS[i.category] || '🎮')}</div>
+        <div class="ci-body"><h4>${i.name}</h4><div class="cond">${CONDITION_LABELS[i.condition] || ''}</div></div>
+        <div class="qty-box"><button onclick="setQty('${i.id}', ${i.qty - 1}); renderCartView();">−</button><span>${i.qty}</span><button onclick="setQty('${i.id}', ${i.qty + 1}); renderCartView();">+</button></div>
+        <div class="ci-price">${formatINR(i.price * i.qty)}</div>
+        <div class="ci-remove" onclick="removeFromCart('${i.id}'); renderCartView();">✕</div>
+      </div>
+    `).join('');
+  }
+
+  const subtotal = cartTotal();
+  document.getElementById('cartSubtotal').textContent = formatINR(subtotal);
+  document.getElementById('cartGrandTotal').textContent = formatINR(subtotal);
+}
+
+function renderCheckoutSummary(){
+  const cart = getCart();
+  const subtotal = cartTotal();
+  const fee = bookingFeeFor(subtotal);
+  const balance = subtotal - fee;
+
+  document.getElementById('itemsCountLbl').textContent = `Items (${cart.reduce((n,i)=>n+i.qty,0)})`;
+  document.getElementById('itemsTotalLbl').textContent = formatINR(subtotal);
+  document.getElementById('feeAmtLbl').textContent = formatINR(fee);
+  document.getElementById('balanceAmtLbl').textContent = formatINR(balance);
+  document.getElementById('checkoutTotalLbl').textContent = formatINR(subtotal);
+  document.getElementById('prebookAmt').textContent = formatINR(fee);
+  document.getElementById('codAmt').textContent = formatINR(balance);
+  const inline = document.getElementById('feeInlineLbl');
+  if(inline) inline.textContent = formatINR(fee);
+}
+
+async function goTo(view){
+  if(view === 'checkout'){
+    if(getCart().length === 0){ alert('Your cart is empty.'); return; }
+    const user = await requireAuth('cart-checkout.html');
+    if(!user) return;
+    // prefill known details
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+    if(profile){
+      if(profile.full_name) document.getElementById('d-name').value = profile.full_name;
+      if(profile.phone) document.getElementById('d-mobile').value = profile.phone;
+    }
+    document.getElementById('d-email').value = user.email || '';
+    renderCheckoutSummary();
+    fbq('track', 'InitiateCheckout', { value: cartTotal(), currency: 'INR', num_items: getCart().length });
+  }
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  updateSteps(view);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function loadCheckoutSettings(){
+  const { data, error } = await sb.from('store_settings').select('*').eq('id', 1).single();
+  if(error || !data) return;
+  storeSettings = data;
+  if(data.upi_id) document.getElementById('upiId').textContent = data.upi_id;
+  if(data.upi_qr_url){
+    document.getElementById('qrImg').innerHTML = `<img src="${data.upi_qr_url}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`;
+  }
+  renderCheckoutSummary();
+}
+
+async function placeOrder(){
+  const utr = document.getElementById('utrInput').value.trim();
+  const name = document.getElementById('d-name').value.trim();
+  const mobile = document.getElementById('d-mobile').value.trim();
+  const address = document.getElementById('d-address').value.trim();
+  const city = document.getElementById('d-city').value.trim();
+  const state = document.getElementById('d-state').value.trim();
+  const pin = document.getElementById('d-pin').value.trim();
+
+  if(!name || !mobile || !address){
+    alert('Please fill your Name, Mobile Number and Address before confirming.');
+    return;
+  }
+
+  const user = await getSessionUser();
+  if(!user){ window.location.href = 'auth.html?redirect=cart-checkout.html'; return; }
+
+  const cart = getCart();
+  if(cart.length === 0){ alert('Your cart is empty.'); return; }
+
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = true; btn.textContent = 'Placing Order...';
+
+  const subtotal = cartTotal();
+  const fee = bookingFeeFor(subtotal);
+  const balance = subtotal - fee;
+
+  let screenshotUrl = null;
+  const fileInput = document.getElementById('screenshotInput');
+  if(fileInput.files && fileInput.files[0]){
+    const file = fileInput.files[0];
+    const path = `${user.id}/${Date.now()}-${file.name}`;
+    const { error: upErr } = await sb.storage.from('payment-proofs').upload(path, file);
+    if(!upErr){
+      const { data: pub } = sb.storage.from('payment-proofs').getPublicUrl(path);
+      screenshotUrl = pub.publicUrl;
+    }
+  }
+
+  const { data: order, error } = await sb.from('orders').insert({
+    user_id: user.id,
+    items: cart,
+    total_amount: subtotal,
+    booking_fee_amount: fee,
+    remaining_amount: balance,
+    status: 'payment_submitted',
+    utr_number: utr || null,
+    payment_screenshot_url: screenshotUrl,
+    customer_name: name,
+    customer_phone: mobile,
+    shipping_address: `${address}, ${city}, ${state} - ${pin}`
+  }).select().single();
+
+  if(error){
+    alert('Could not place order: ' + error.message);
+    btn.disabled = false; btn.textContent = 'Confirm Booking';
+    return;
+  }
+
+  document.getElementById('confirmOrderId').textContent = order.order_number;
+  document.getElementById('confirmProducts').textContent = cart.length === 1 ? cart[0].name : `${cart[0].name} + ${cart.length - 1} more`;
+  document.getElementById('confirmTotal').textContent = formatINR(subtotal);
+  document.getElementById('confirmFee').textContent = formatINR(fee) + ' PAID';
+  document.getElementById('confirmUtr').textContent = utr || '—';
+  document.getElementById('confirmBalance').textContent = formatINR(balance) + ' (Cash on Delivery)';
+
+  fbq('track', 'Purchase', { value: subtotal, currency: 'INR', content_type: 'product', num_items: cart.length });
+  clearCart();
+  goTo('confirm');
+  btn.disabled = false; btn.textContent = 'Confirm Booking';
+}
+
+function checkFormValid(){
+  const paid = document.getElementById('paidConfirm').checked;
+  const utr = document.getElementById('utrInput').value.trim();
+  document.getElementById('placeOrderBtn').disabled = !(paid && utr.length >= 6);
+}
+
+function sendOnWhatsApp(){
+  const utr = document.getElementById('utrInput').value.trim() || '[Enter UTR above]';
+  const subtotal = cartTotal();
+  const fee = bookingFeeFor(subtotal);
+  const wa = (storeSettings && storeSettings.whatsapp_number) || '';
+  const items = getCart().map(i => `${i.name} x${i.qty}`).join(', ') || 'Cart items';
+  const msgText = "Hi Vikas Gaming Store, I have completed my booking payment.\n\nOrder Items: " + items + "\nAmount Paid: " + formatINR(fee) + " (Booking Fee)\nUTR/Transaction ID: " + utr + "\n\nPlease confirm my order.";
+  fbq('track', 'Lead', { value: fee, currency: 'INR', content_name: 'Booking Payment Proof' });
+  if(!wa){ alert('WhatsApp number not set up by store yet.'); return; }
+  window.open(waLink(wa, msgText), '_blank');
+}
+
+function updateSteps(view){
+  const order = {cart:1, checkout:2, confirm:3};
+  const current = order[view];
+  ['step1','step2','step3'].forEach((id,i)=>{
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+    if(i+1 < current) el.classList.add('done');
+    else if(i+1 === current) el.classList.add('active');
+  });
+}
+
+updateSteps('cart');
+renderCartView();
+loadCheckoutSettings();
+document.querySelectorAll('.pay-opt').forEach(o=>{
+  o.addEventListener('click',()=>{
+    document.querySelectorAll('.pay-opt').forEach(x=>x.classList.remove('selected'));
+    o.classList.add('selected');
+  });
+});
+</script>
+
+</body>
+</html>
