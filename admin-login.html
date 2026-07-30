@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --gold:#F5B942; --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+    --green:#4ADE80; --red:#F87171;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Poppins',sans-serif; min-height:100vh; position:relative; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Poppins',sans-serif; }
+  .mono{ font-family:'Poppins',sans-serif; }
+  a{ color:inherit; text-decoration:none; }
+  input{ font-family:'Poppins',sans-serif; }
+
+  body::before{
+    content:""; position:fixed; inset:0;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:56px 56px; opacity:0.1; pointer-events:none;
+  }
+  .glow{ position:fixed; z-index:0; border-radius:50%; filter:blur(60px); pointer-events:none; }
+  .glow.a{ top:-160px; right:-120px; width:520px; height:520px; background:radial-gradient(circle,var(--violet-dim),transparent 65%); }
+  .glow.b{ bottom:-200px; left:-150px; width:480px; height:480px; background:radial-gradient(circle,var(--cyan-dim),transparent 65%); }
+
+  .center{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:30px 20px; }
+  .login-card{ width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:38px 32px; }
+
+  .logo-block{ text-align:center; margin-bottom:8px; }
+  .tick-mark{ width:74px; height:74px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:32px; background:var(--cyan-dim); border:1px solid var(--cyan); color:var(--cyan); margin:0 auto 16px; }
+  .logo-mark{ width:74px; height:74px; border-radius:50%; object-fit:contain; background:#0D0D14; padding:3px; display:block; margin:0 auto 16px; }
+  .logo-block h1{ font-size:19px; margin-bottom:4px; }
+  .logo-block .tag{ font-size:11px; font-family:'Poppins'; letter-spacing:2px; color:var(--text-faint); }
+
+  .url-chip{ display:flex; align-items:center; justify-content:center; gap:6px; margin:18px 0 26px; font-size:11px; font-family:'Poppins'; color:var(--cyan); background:var(--cyan-dim); border:1px solid #22D3F540; padding:6px 12px; border-radius:100px; width:fit-content; margin-left:auto; margin-right:auto; }
+
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  .field{ display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+  .field label{ font-size:11px; color:var(--text-faint); font-family:'Poppins'; letter-spacing:0.5px; }
+  .field .input-wrap{ position:relative; }
+  .field input{ width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; color:var(--text); font-size:13.5px; }
+  .field input:focus{ outline:none; border-color:var(--cyan); }
+  .field .toggle-eye{ position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--text-faint); cursor:pointer; }
+
+  .inline-link{ text-align:right; margin:-8px 0 18px; }
+  .inline-link a{ font-size:12px; color:var(--cyan); font-weight:600; cursor:pointer; }
+
+  .error-box{ display:none; background:#F8717122; border:1px solid #F8717155; color:var(--red); font-size:12.5px; padding:10px 14px; border-radius:9px; margin-bottom:16px; }
+  .error-box.show{ display:block; }
+
+  .btn-main{ width:100%; padding:14px; border-radius:11px; font-weight:600; font-size:14px; background:linear-gradient(135deg,var(--violet),var(--cyan)); color:#08080D; border:none; cursor:pointer; box-shadow:0 0 26px var(--violet-dim); }
+
+  .back-link{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-dim); cursor:pointer; margin-bottom:18px; }
+  .back-link:hover{ color:var(--text); }
+
+  .foot-note{ text-align:center; font-size:11.5px; color:var(--text-faint); margin-top:24px; }
+  .foot-note a{ color:var(--text-dim); font-weight:600; }
+
+  .demo-hint{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:11.5px; color:var(--text-dim); margin-top:20px; line-height:1.7; }
+  .demo-hint .mono{ color:var(--cyan); }
+
+  @media(max-width:420px){ .login-card{ padding:30px 22px; border-radius:16px; } }
+  @media(max-width:640px){
+    .field input{ padding:13px 14px; font-size:14px; }
+    .btn-main, .btn-ghost{ min-height:52px; }
+  }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2565367940576632');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2565367940576632&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<div class="glow a"></div>
+<div class="glow b"></div>
+
+<div class="center">
+  <div class="login-card">
+
+    <!-- LOGIN VIEW -->
+    <div class="view active" id="view-login">
+      <div class="logo-block">
+        <img class="logo-mark" alt="Vikas Gaming Store">
+        <h1>Admin Panel</h1>
+        <div class="tag">VIKAS GAMING STORE</div>
+      </div>
+      <div class="url-chip">🔒 /admin/login</div>
+
+      <div class="error-box" id="errorBox">Invalid email or password. Please try again.</div>
+
+      <div class="field">
+        <label>EMAIL ADDRESS</label>
+        <input type="email" id="adminEmail" placeholder="admin@vikasgamingstore.in">
+      </div>
+      <div class="field">
+        <label>PASSWORD</label>
+        <div class="input-wrap">
+          <input type="password" id="adminPass" placeholder="Enter password">
+          <span class="toggle-eye" onclick="togglePass()">👁</span>
+        </div>
+      </div>
+      <div class="inline-link"><a onclick="switchView('forgot')">Forgot Password?</a></div>
+
+      <button class="btn-main" onclick="attemptLogin()">Login to Dashboard</button>
+
+      <div class="foot-note"><a href="index.html">← Back to Store</a></div>
+    </div>
+
+    <!-- FORGOT PASSWORD VIEW -->
+    <div class="view" id="view-forgot">
+      <div class="back-link" onclick="switchView('login')">← Back to Login</div>
+      <div class="logo-block" style="margin-bottom:20px;">
+        <img class="logo-mark" alt="Vikas Gaming Store">
+        <h1>Reset Admin Password</h1>
+        <div class="tag" style="margin-top:6px;">We'll email you a reset link</div>
+      </div>
+      <div class="field">
+        <label>REGISTERED EMAIL</label>
+        <input type="email" id="adminForgotEmail" placeholder="admin@vikasgamingstore.in">
+      </div>
+      <button class="btn-main" onclick="sendAdminReset()">Send Reset Link</button>
+    </div>
+
+    <!-- SENT VIEW -->
+    <div class="view" id="view-sent" style="text-align:center;">
+      <div class="tick-mark">✓</div>
+      <h1 style="margin-top:16px;">Reset Link Sent</h1>
+      <p style="font-size:13px; color:var(--text-dim); margin-top:8px; line-height:1.7;">Check your email for instructions to reset your admin password.</p>
+      <button class="btn-main" style="margin-top:24px;" onclick="switchView('login')">Back to Login</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.getElementById('errorBox').classList.remove('show');
+}
+function togglePass(){
+  const el = document.getElementById('adminPass');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+async function attemptLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass = document.getElementById('adminPass').value.trim();
+  const errorBox = document.getElementById('errorBox');
+  errorBox.classList.remove('show');
+
+  if(!email || !pass){
+    errorBox.textContent = 'Please enter email and password.';
+    errorBox.classList.add('show');
+    return;
+  }
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if(error){
+    errorBox.textContent = 'Invalid email or password. Please try again.';
+    errorBox.classList.add('show');
+    return;
+  }
+
+  const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', data.user.id).single();
+  if(!profile || !profile.is_admin){
+    await sb.auth.signOut();
+    errorBox.textContent = 'This account does not have admin access.';
+    errorBox.classList.add('show');
+    return;
+  }
+
+  window.location.href = 'admin-dashboard.html';
+}
+document.getElementById('adminPass').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') attemptLogin();
+});
+
+async function sendAdminReset(){
+  const email = document.getElementById('adminForgotEmail').value.trim();
+  if(!email) return;
+  await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/reset-password.html?next=admin'
+  });
+  switchView('sent');
+}
+
+(async () => {
+  const user = await getSessionUser();
+  if(!user) return;
+  const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', user.id).single();
+  if(profile && profile.is_admin) window.location.href = 'admin-dashboard.html';
+})();
+</script>
+
+</body>
+</html>
