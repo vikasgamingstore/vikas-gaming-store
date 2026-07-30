@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Poppins',sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Poppins',sans-serif; }
+  .mono{ font-family:'Poppins',sans-serif; }
+  a{ color:inherit; text-decoration:none; }
+  body::before{ content:""; position:fixed; inset:0; background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size:56px 56px; opacity:0.1; pointer-events:none; z-index:0; }
+
+  header{ position:sticky; top:0; z-index:50; background:rgba(8,8,13,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1240px; margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:40px; height:40px; border-radius:50%; object-fit:contain; background:#0D0D14; padding:2px; display:block; flex-shrink:0; }
+  .logo-text{ font-family:'Poppins'; font-weight:700; font-size:17px; white-space:nowrap; }
+  nav.links{ display:flex; gap:36px; }
+  nav.links a{ font-size:14px; font-weight:500; color:var(--text-dim); }
+  nav.links a:hover{ color:var(--text); }
+  .login-btn{ padding:9px 20px; border-radius:9px; font-size:13px; font-weight:600; background:linear-gradient(135deg,var(--violet),#5B3DE0); color:#fff; }
+
+  .hero{ padding:60px 32px 10px; text-align:center; position:relative; z-index:1; }
+  .hero .tag{ font-family:'Poppins'; font-size:12px; letter-spacing:2px; color:var(--cyan); margin-bottom:14px; display:block; }
+  .hero h1{ font-size:clamp(28px,5vw,40px); font-weight:700; letter-spacing:-1px; margin-bottom:10px; }
+  .hero .updated{ font-size:12px; color:var(--text-faint); font-family:'Poppins'; }
+
+  .doc{ max-width:800px; margin:0 auto; padding:50px 32px 90px; position:relative; z-index:1; }
+  .doc-card{ background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:40px; }
+  .doc-card h2{ font-size:17px; margin:28px 0 12px; }
+  .doc-card h2:first-child{ margin-top:0; }
+  .doc-card p{ font-size:14px; color:var(--text-dim); line-height:1.85; margin-bottom:10px; }
+  .doc-card ul{ margin:10px 0 10px 20px; }
+  .doc-card li{ font-size:14px; color:var(--text-dim); line-height:1.85; margin-bottom:6px; }
+  .toc{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:34px; }
+  .toc a{ font-size:12px; font-family:'Poppins'; color:var(--cyan); background:var(--cyan-dim); border:1px solid #22D3F540; padding:6px 12px; border-radius:100px; }
+
+  footer{ border-top:1px solid var(--line); padding:50px 32px 28px; text-align:center; position:relative; z-index:1; }
+  footer .fmark{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; }
+  footer p{ font-size:12px; color:var(--text-faint); font-family:'Poppins'; }
+
+  @media(max-width:900px){ nav.links{ display:none; } }
+  @media(max-width:640px){
+    .nav-row{ padding:14px 16px; }
+    .logo-mark{ width:34px; height:34px; }
+    .logo-text{ font-size:14px; }
+    .login-btn{ padding:9px 14px; font-size:12.5px; white-space:nowrap; }
+    .doc-card{ padding:20px 16px; }
+    .wrap, .hero, footer{ padding-left:16px; padding-right:16px; }
+  }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2565367940576632');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2565367940576632&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a href="index.html" class="logo"><img class="logo-mark" alt="Vikas Gaming Store"><div class="logo-text">VIKAS GAMING STORE</div></a>
+    <nav class="links">
+      <a href="index.html">Home</a><a href="index.html#shop">Shop</a><a href="about.html">About Us</a><a href="contact.html">Contact</a>
+    </nav>
+    <a href="auth.html" class="login-btn">Login</a>
+  </div>
+</header>
+
+<section class="hero">
+  <span class="tag">LEGAL</span>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: 29 July 2026</div>
+</section>
+
+<div class="doc">
+  <div class="doc-card">
+    <div class="toc">
+      <a href="#collect">Info We Collect</a>
+      <a href="#use">How We Use It</a>
+      <a href="#payment">Payment Data</a>
+      <a href="#sharing">Sharing</a>
+      <a href="#security">Security</a>
+      <a href="#rights">Your Rights</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <h2 id="collect">1. Information We Collect</h2>
+    <p>When you shop with Vikas Gaming Store, we collect information you provide directly, such as your name, mobile number, email address, delivery address, and order details. We also collect basic usage data like pages visited and items viewed, to help us improve the store.</p>
+
+    <h2 id="use">2. How We Use Your Information</h2>
+    <ul>
+      <li>To process and deliver your orders</li>
+      <li>To send order updates, tracking information, and support messages (including via WhatsApp)</li>
+      <li>To respond to your queries and provide customer support</li>
+      <li>To improve our product catalog, pricing, and site experience</li>
+    </ul>
+
+    <h2 id="payment">3. Payment Information</h2>
+    <p>Booking payments are made directly by you via UPI to our published UPI ID / QR code. We do not store your UPI PIN, bank account details, or card numbers. You may be asked to share your UPI transaction ID (UTR) to confirm your payment — this is used solely to verify and process your order.</p>
+
+    <h2 id="sharing">4. Sharing of Information</h2>
+    <p>We do not sell your personal information. Your details may be shared with delivery partners solely to fulfil your order, or disclosed if required by law.</p>
+
+    <h2 id="security">5. Data Security</h2>
+    <p>We take reasonable technical and organisational measures to protect your information from unauthorised access, alteration, or disclosure. However, no method of online transmission is completely secure, and we cannot guarantee absolute security.</p>
+
+    <h2 id="rights">6. Your Rights</h2>
+    <p>You may request access to, correction of, or deletion of your personal information at any time by contacting our support team. You can also update your saved addresses and profile details directly from your account dashboard.</p>
+
+    <h2 id="contact">7. Contact Us</h2>
+    <p>For any privacy-related questions, reach out at <span data-store-email>the email on our Contact page</span> or via WhatsApp.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="fmark"><img class="logo-mark" alt="Vikas Gaming Store"><div class="logo-text">VIKAS GAMING STORE</div></div>
+  <p>© 2026 VIKAS GAMING STORE. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script>applyStoreContactInfo();</script>
+
+</body>
+</html>

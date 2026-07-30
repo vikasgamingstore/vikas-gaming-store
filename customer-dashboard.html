@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --gold:#F5B942; --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+    --green:#4ADE80; --red:#F87171;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Poppins',sans-serif; }
+  h1,h2,h3{ font-family:'Poppins',sans-serif; }
+  .mono{ font-family:'Poppins',sans-serif; }
+  a{ color:inherit; text-decoration:none; }
+  input,select,textarea{ font-family:'Poppins',sans-serif; }
+
+  header{ position:sticky; top:0; z-index:50; background:rgba(8,8,13,0.85); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .nav-row{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:1240px; margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .logo-mark{ width:40px; height:40px; border-radius:50%; object-fit:contain; background:#0D0D14; padding:2px; display:block; flex-shrink:0; }
+  .logo-text{ font-family:'Poppins'; font-weight:700; font-size:17px; white-space:nowrap; }
+  .icon-btn{ width:38px; height:38px; border-radius:9px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--text-dim); cursor:pointer; position:relative; }
+  .cart-count{ position:absolute; top:-6px; right:-6px; background:var(--violet); color:#fff; font-size:10px; font-weight:600; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .nav-actions{ display:flex; align-items:center; gap:14px; }
+
+  .app{ display:grid; grid-template-columns:260px 1fr; max-width:1240px; margin:0 auto; gap:32px; padding:32px; align-items:start; }
+
+  /* profile summary card */
+  .profile-card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:22px; margin-bottom:16px; text-align:center; }
+  .avatar-big{ width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--violet),var(--cyan)); display:flex; align-items:center; justify-content:center; font-family:'Poppins'; font-weight:700; font-size:22px; color:#08080D; margin:0 auto 12px; }
+  .profile-card h3{ font-size:15px; margin-bottom:4px; }
+  .profile-card .sub{ font-size:12px; color:var(--text-faint); font-family:'Poppins'; }
+
+  .side-nav{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:10px; }
+  .nav-item{ display:flex; align-items:center; gap:11px; padding:12px 14px; border-radius:10px; font-size:13.5px; color:var(--text-dim); cursor:pointer; margin-bottom:2px; }
+  .nav-item:hover{ background:var(--surface-2); color:var(--text); }
+  .nav-item.active{ background:var(--violet-dim); color:var(--text); border:1px solid #7B5CFF55; }
+  .nav-item .ic{ font-size:15px; }
+  .nav-item.logout{ color:var(--red); margin-top:6px; border-top:1px solid var(--line); border-radius:0; padding-top:14px; }
+
+  .main{ min-width:0; }
+  .view{ display:none; }
+  .view.active{ display:block; }
+  .page-title{ font-size:24px; margin-bottom:6px; }
+  .page-sub{ font-size:13px; color:var(--text-dim); margin-bottom:28px; }
+
+  /* ORDERS */
+  .order-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:14px; }
+  .order-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--line); flex-wrap:wrap; gap:8px; }
+  .order-top .oid{ font-size:12px; color:var(--text-faint); font-family:'Poppins'; }
+  .order-top .odate{ font-size:12px; color:var(--text-faint); }
+  .pill{ font-size:10px; font-weight:700; padding:4px 10px; border-radius:100px; letter-spacing:0.3px; }
+  .pill.pending{ background:#F5B94222; color:var(--gold); border:1px solid #F5B94255; }
+  .pill.confirmed{ background:#22D3F522; color:var(--cyan); border:1px solid #22D3F555; }
+  .pill.shipped{ background:#7B5CFF22; color:var(--violet); border:1px solid #7B5CFF55; }
+  .pill.delivered{ background:#4ADE8022; color:var(--green); border:1px solid #4ADE8055; }
+  .order-body{ display:flex; gap:14px; align-items:center; }
+  .order-body .thumb{ width:56px; height:56px; border-radius:10px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .order-body .info{ flex:1; }
+  .order-body h4{ font-size:14px; margin-bottom:4px; }
+  .order-body .meta{ font-size:12px; color:var(--text-faint); }
+  .order-body .price{ font-weight:700; font-family:'Poppins'; font-size:15px; }
+  .order-actions{ display:flex; gap:8px; margin-top:14px; }
+  .btn{ padding:9px 16px; border-radius:9px; font-size:12px; font-weight:600; border:1px solid var(--line); background:var(--surface-2); color:var(--text); cursor:pointer; }
+  .btn.primary{ background:linear-gradient(135deg,var(--violet),var(--cyan)); color:#08080D; border:none; }
+  .track-bar{ display:flex; align-items:center; margin-top:16px; }
+  .track-step{ flex:1; text-align:center; position:relative; }
+  .track-step .dot{ width:10px; height:10px; border-radius:50%; background:var(--line); margin:0 auto 6px; position:relative; z-index:1; }
+  .track-step.done .dot{ background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
+  .track-step .lbl{ font-size:10px; color:var(--text-faint); font-family:'Poppins'; }
+  .track-step.done .lbl{ color:var(--text-dim); }
+  .track-line{ position:absolute; top:5px; left:-50%; width:100%; height:1px; background:var(--line); z-index:0; }
+  .track-step.done .track-line{ background:var(--cyan); }
+  .track-step:first-child .track-line{ display:none; }
+
+  /* WISHLIST */
+  .wish-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .wish-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .wish-img{ height:110px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:36px; position:relative; }
+  .wish-remove{ position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%; background:rgba(8,8,13,0.7); display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer; }
+  .wish-body{ padding:14px; }
+  .wish-body h4{ font-size:13px; margin-bottom:8px; }
+  .wish-body .price{ font-weight:700; font-family:'Poppins'; font-size:14px; margin-bottom:10px; }
+
+  /* ADDRESSES */
+  .addr-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .addr-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px; position:relative; }
+  .addr-card.default{ border-color:var(--cyan); }
+  .addr-tag{ position:absolute; top:16px; right:16px; font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; background:var(--cyan-dim); color:var(--cyan); }
+  .addr-card h4{ font-size:13.5px; margin-bottom:8px; }
+  .addr-card p{ font-size:12.5px; color:var(--text-dim); line-height:1.7; margin-bottom:14px; }
+  .addr-actions{ display:flex; gap:8px; }
+  .add-addr-card{ border:1px dashed var(--line); border-radius:14px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; color:var(--text-faint); font-size:13px; cursor:pointer; min-height:150px; }
+  .add-addr-card .plus{ font-size:26px; }
+
+  /* PROFILE */
+  .panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:26px; margin-bottom:20px; }
+  .panel h3{ font-size:15px; margin-bottom:18px; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1/-1; }
+  .field label{ font-size:10px; color:var(--text-faint); font-family:'Poppins'; letter-spacing:0.6px; }
+  .field input{ background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:11px 13px; color:var(--text); font-size:13px; }
+  .field input:focus{ outline:none; border-color:var(--cyan); }
+
+  @media(max-width:900px){
+    .app{ grid-template-columns:1fr; }
+    .wish-grid{ grid-template-columns:repeat(2,1fr); }
+    .addr-grid, .form-grid{ grid-template-columns:1fr; }
+  }
+  @media(max-width:640px){
+    .nav-row{ padding:14px 16px; }
+    .logo-mark{ width:34px; height:34px; }
+    .logo-text{ font-size:14px; }
+    .app{ padding:18px 16px; gap:18px; }
+    .profile-card{ padding:18px; }
+    .page-title{ font-size:21px; }
+    .page-sub{ margin-bottom:20px; }
+    .order-card{ padding:16px 14px; }
+    .order-top{ gap:6px; }
+    /* order line stacks so the price never gets crushed */
+    .order-body{ flex-wrap:wrap; gap:12px; }
+    .order-body .thumb{ width:48px; height:48px; font-size:20px; }
+    .order-body .info{ flex:1 1 auto; min-width:0; }
+    .order-body .price{ flex:1 1 100%; }
+    .panel{ padding:18px 16px; }
+    .btn{ min-height:42px; }
+  }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2565367940576632');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2565367940576632&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="nav-row">
+    <a href="index.html" class="logo"><img class="logo-mark" alt="Vikas Gaming Store"><div class="logo-text">VIKAS GAMING STORE</div></a>
+    <div class="nav-actions">
+      <a href="index.html" class="icon-btn" title="Home">⌂</a>
+      <a href="cart-checkout.html" class="icon-btn" title="Cart">🛒<span class="cart-count" style="display:none;">0</span></a>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <aside>
+    <div class="profile-card">
+      <div class="avatar-big" id="avatarInitials">—</div>
+      <h3 id="profileNameSide">Loading…</h3>
+      <div class="sub" id="profilePhoneSide">—</div>
+    </div>
+    <div class="side-nav">
+      <div class="nav-item active" onclick="showView('orders', this)"><span class="ic">📦</span>My Orders</div>
+      <div class="nav-item" onclick="showView('profile', this)"><span class="ic">⚙️</span>Profile Settings</div>
+      <a onclick="doLogout('index.html')" class="nav-item logout" style="cursor:pointer;"><span class="ic">↪</span>Logout</a>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ORDERS -->
+    <section class="view active" id="v-orders">
+      <h2 class="page-title">My Orders</h2>
+      <div class="page-sub">Track and manage your recent orders</div>
+      <div id="ordersWrap">
+        <div style="text-align:center; padding:40px; color:var(--text-faint); font-size:13px;">Loading your orders…</div>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view" id="v-profile">
+      <h2 class="page-title">Profile Settings</h2>
+      <div class="page-sub">Update your personal information</div>
+
+      <div class="panel">
+        <h3>Personal Details</h3>
+        <div class="form-grid">
+          <div class="field"><label>FULL NAME</label><input id="pf-name"></div>
+          <div class="field"><label>MOBILE NUMBER</label><input id="pf-phone"></div>
+          <div class="field full"><label>EMAIL ADDRESS</label><input id="pf-email" disabled style="opacity:0.6;"></div>
+        </div>
+        <div style="margin-top:16px;"><button class="btn primary" id="pf-save-btn" onclick="saveProfile()">Save Changes</button></div>
+      </div>
+
+      <div class="panel">
+        <h3>Change Password</h3>
+        <div class="form-grid">
+          <div class="field full"><label>NEW PASSWORD</label><input type="password" id="pf-newpass" placeholder="Minimum 6 characters"></div>
+        </div>
+        <div style="margin-top:16px;"><button class="btn primary" id="pf-pass-btn" onclick="changePassword()">Update Password</button></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+function showView(id, el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+let currentUser = null;
+
+async function init(){
+  currentUser = await requireAuth('customer-dashboard.html');
+  if(!currentUser) return;
+
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  const name = (profile && profile.full_name) || 'Customer';
+  const phone = (profile && profile.phone) || currentUser.email;
+  document.getElementById('profileNameSide').textContent = name;
+  document.getElementById('profilePhoneSide').textContent = phone;
+  document.getElementById('avatarInitials').textContent = name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+
+  document.getElementById('pf-name').value = (profile && profile.full_name) || '';
+  document.getElementById('pf-phone').value = (profile && profile.phone) || '';
+  document.getElementById('pf-email').value = currentUser.email || '';
+
+  loadOrders();
+}
+
+async function loadOrders(){
+  const wrap = document.getElementById('ordersWrap');
+  const { data, error } = await sb.from('orders').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+  if(error || !data || data.length === 0){
+    wrap.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-faint); font-size:13px;">No orders yet. <a href="index.html" style="color:var(--cyan);">Start shopping →</a></div>`;
+    return;
+  }
+  wrap.innerHTML = data.map(o => {
+    const items = Array.isArray(o.items) ? o.items : [];
+    const itemsLabel = items.length ? items.map(i => `${i.name} x${i.qty}`).join(', ') : 'Order';
+    const pillClass = ORDER_STATUS_PILL[o.status] || 'pending';
+    const pillLabel = ORDER_STATUS_LABELS[o.status] || o.status;
+    const dateLabel = new Date(o.created_at).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+    return `
+    <div class="order-card">
+      <div class="order-top">
+        <span class="oid">ORDER ${o.order_number} · <span class="odate">${dateLabel}</span></span>
+        <span class="pill ${pillClass}">${pillLabel}</span>
+      </div>
+      <div class="order-body">
+        <div class="thumb">📦</div>
+        <div class="info"><h4>${itemsLabel}</h4><div class="meta">Booking fee paid: ${formatINR(o.booking_fee_amount)} · Balance (COD): ${formatINR(o.remaining_amount)}</div></div>
+        <div class="price">${formatINR(o.total_amount)}</div>
+      </div>
+      ${o.tracking_number ? `<div style="font-size:12px;color:var(--text-dim);margin-top:10px;">Tracking No: <span class="mono">${o.tracking_number}</span></div>` : ''}
+      ${o.tracking_notes ? `<div style="font-size:12px;color:var(--text-faint);margin-top:4px;">${o.tracking_notes}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function saveProfile(){
+  const btn = document.getElementById('pf-save-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const { error } = await sb.from('profiles').update({
+    full_name: document.getElementById('pf-name').value.trim(),
+    phone: document.getElementById('pf-phone').value.trim()
+  }).eq('id', currentUser.id);
+  btn.disabled = false; btn.textContent = 'Save Changes';
+  if(error){ alert('Could not save: ' + error.message); return; }
+  alert('Profile updated.');
+  init();
+}
+
+async function changePassword(){
+  const pass = document.getElementById('pf-newpass').value;
+  if(!pass || pass.length < 6){ alert('Password must be at least 6 characters.'); return; }
+  const btn = document.getElementById('pf-pass-btn');
+  btn.disabled = true; btn.textContent = 'Updating...';
+  const { error } = await sb.auth.updateUser({ password: pass });
+  btn.disabled = false; btn.textContent = 'Update Password';
+  if(error){ alert('Could not update password: ' + error.message); return; }
+  document.getElementById('pf-newpass').value = '';
+  alert('Password updated.');
+}
+
+init();
+</script>
+
+</body>
+</html>
