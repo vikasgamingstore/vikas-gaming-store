@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — Vikas Gaming Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080D; --surface:#121219; --surface-2:#191924; --line:#26263A;
+    --violet:#7B5CFF; --violet-dim:#7B5CFF33; --cyan:#22D3F5; --cyan-dim:#22D3F533;
+    --gold:#F5B942; --text:#F2F2F7; --text-dim:#9797AC; --text-faint:#5C5C74;
+    --green:#4ADE80; --red:#F87171;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Poppins',sans-serif; }
+  h1,h2,h3{ font-family:'Poppins',sans-serif; }
+  .mono{ font-family:'Poppins',sans-serif; }
+  a{ color:inherit; text-decoration:none; }
+
+  .app{ display:grid; grid-template-columns:250px 1fr; min-height:100vh; }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{ background:var(--surface); border-right:1px solid var(--line); padding:26px 18px; display:flex; flex-direction:column; }
+  .side-logo{ display:flex; align-items:center; gap:10px; padding:0 8px 28px; }
+  .logo-mark{ width:40px; height:40px; border-radius:50%; object-fit:contain; background:#0D0D14; padding:2px; display:block; flex-shrink:0; }
+  .side-logo .t{ font-family:'Poppins'; font-weight:700; font-size:14px; line-height:1.2; }
+  .side-logo .t span{ display:block; font-size:9px; color:var(--text-faint); font-family:'Poppins'; letter-spacing:1px; }
+
+  .nav-group{ margin-bottom:22px; }
+  .nav-group .gt{ font-size:10px; font-family:'Poppins'; color:var(--text-faint); letter-spacing:1.5px; padding:0 10px 8px; }
+  .nav-item{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:9px; font-size:13px; color:var(--text-dim); cursor:pointer; margin-bottom:2px; }
+  .nav-item:hover{ background:var(--surface-2); color:var(--text); }
+  .nav-item.active{ background:var(--violet-dim); color:var(--text); border:1px solid #7B5CFF55; }
+  .nav-item .ic{ font-size:15px; }
+
+  /* ---------- MAIN ---------- */
+  .main{ padding:28px 36px 60px; }
+  .topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; }
+  .topbar h1{ font-size:24px; }
+  .topbar .sub{ font-size:13px; color:var(--text-dim); margin-top:4px; }
+  .admin-chip{ display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--line); padding:8px 14px; border-radius:100px; font-size:12px; }
+  .admin-chip .dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); }
+
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* ---------- STAT CARDS ---------- */
+  .stat-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-bottom:36px; }
+  .stat-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .stat-card .lbl{ font-size:11px; color:var(--text-faint); font-family:'Poppins'; letter-spacing:0.8px; margin-bottom:10px; }
+  .stat-card .val{ font-size:24px; font-weight:700; font-family:'Poppins'; margin-bottom:6px; }
+  .stat-card .delta{ font-size:11px; color:var(--green); }
+  .stat-card .delta.down{ color:var(--red); }
+
+  .panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px; margin-bottom:24px; }
+  .panel-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .panel-head h3{ font-size:15px; }
+  .btn{ padding:9px 16px; border-radius:9px; font-size:12px; font-weight:600; border:1px solid var(--line); background:var(--surface-2); color:var(--text); cursor:pointer; }
+  .btn.primary{ background:linear-gradient(135deg,var(--violet),var(--cyan)); color:#08080D; border:none; }
+
+  table{ width:100%; border-collapse:collapse; }
+  th{ text-align:left; font-size:10px; color:var(--text-faint); font-family:'Poppins'; letter-spacing:1px; padding:0 10px 12px; border-bottom:1px solid var(--line); }
+  td{ padding:14px 10px; font-size:13px; border-bottom:1px solid var(--line); color:var(--text-dim); }
+  tr:last-child td{ border-bottom:none; }
+  td.strong{ color:var(--text); font-weight:600; }
+
+  .pill{ font-size:10px; font-weight:700; padding:4px 10px; border-radius:100px; letter-spacing:0.3px; }
+  .pill.pending{ background:#F5B94222; color:var(--gold); border:1px solid #F5B94255; }
+  .pill.confirmed{ background:#22D3F522; color:var(--cyan); border:1px solid #22D3F555; }
+  .pill.shipped{ background:#7B5CFF22; color:var(--violet); border:1px solid #7B5CFF55; }
+  .pill.delivered{ background:#4ADE8022; color:var(--green); border:1px solid #4ADE8055; }
+  .pill.cancelled{ background:#F8717122; color:var(--red); border:1px solid #F8717155; }
+
+  select.status-sel{ background:var(--surface-2); border:1px solid var(--line); color:var(--text); font-size:12px; padding:6px 10px; border-radius:8px; }
+
+  /* forms */
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1/-1; }
+  .field label{ font-size:10px; color:var(--text-faint); font-family:'Poppins'; letter-spacing:0.6px; }
+  .field input, .field select, .field textarea{ background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:10px 12px; color:var(--text); font-size:13px; font-family:'Poppins'; }
+  .field textarea{ resize:vertical; min-height:70px; }
+
+  .img-strip{ display:flex; gap:10px; flex-wrap:wrap; margin:-8px 0 12px; }
+  .img-cell{ position:relative; width:84px; height:84px; border-radius:10px; overflow:hidden;
+    background:#F4F4F7; border:1px solid var(--line); }
+  .img-cell img{ width:100%; height:100%; object-fit:contain; padding:4px; display:block; }
+  .img-cell .rm{ position:absolute; top:3px; right:3px; width:20px; height:20px; border-radius:50%;
+    border:none; background:rgba(8,8,13,.78); color:#fff; font-size:12px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; }
+  .img-cell .first{ position:absolute; bottom:0; left:0; right:0; background:var(--violet); color:#fff;
+    font-size:9px; text-align:center; padding:2px 0; font-weight:600; }
+  .img-drop{ border:1px dashed var(--line); border-radius:12px; padding:30px; text-align:center; color:var(--text-faint); font-size:12px; margin-bottom:18px; cursor:pointer; }
+  .qr-preview{ width:110px; height:110px; flex-shrink:0; border-radius:10px; background-image:
+      linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #000 75%), linear-gradient(-45deg, transparent 75%, #000 75%);
+      background-size:14px 14px; background-position:0 0, 0 7px, 7px -7px, -7px 0px; background-color:#fff;
+      display:flex; align-items:center; justify-content:center; }
+
+  .customer-row{ display:flex; align-items:center; gap:12px; }
+  .avatar{ width:32px; height:32px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--text-dim); }
+
+  .banner-card{ display:flex; gap:16px; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:12px; }
+  .banner-card .prev{ width:90px; height:50px; border-radius:8px; background:linear-gradient(135deg,var(--violet-dim),var(--cyan-dim)); display:flex; align-items:center; justify-content:center; font-size:20px; }
+
+  .coupon-card{ display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:12px; }
+  .coupon-code{ font-family:'Poppins'; font-weight:700; letter-spacing:1px; color:var(--cyan); }
+
+  .mobile-topbar{ display:none; }
+  .sidebar-overlay{ display:none; }
+
+  @media(max-width:1100px){ .stat-grid{ grid-template-columns:repeat(2,1fr); } }
+  /* tables have many columns — let them scroll sideways instead of squashing */
+  .panel{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .panel table{ min-width:620px; }
+
+  @media(max-width:900px){
+    .app{ grid-template-columns:1fr; padding:0; }
+    .mobile-topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:16px 18px; background:var(--surface); border-bottom:1px solid var(--line);
+      position:sticky; top:0; z-index:60;
+    }
+    .mobile-topbar .side-logo{ padding:0; }
+    .hamburger{ width:38px; height:38px; border-radius:9px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-size:18px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+    .sidebar{
+      position:fixed; top:0; left:0; height:100vh; width:270px; z-index:100;
+      transform:translateX(-100%); transition:transform .25s ease; overflow-y:auto;
+    }
+    .sidebar.open{ transform:translateX(0); }
+    .sidebar-overlay{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:90;
+    }
+    .sidebar-overlay.open{ display:block; }
+    .main{ padding:20px 16px 56px; }
+    .form-grid{ grid-template-columns:1fr; }
+  }
+  @media(max-width:640px){
+    .main{ padding:18px 12px 56px; }
+    .topbar{ flex-direction:column; align-items:flex-start; gap:12px; margin-bottom:22px; }
+    .topbar h1{ font-size:21px; }
+    .stat-grid{ grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+    .stat-card{ padding:14px; }
+    .stat-card .val{ font-size:19px; }
+    .stat-card .lbl{ font-size:10px; }
+    .panel{ padding:16px 14px; border-radius:14px; margin-bottom:16px; }
+    .panel-head{ flex-wrap:wrap; gap:10px; margin-bottom:14px; }
+    .btn{ min-height:40px; }
+    .btn.primary{ min-height:44px; }
+    .field input, .field select, .field textarea{ padding:12px; font-size:14px; }
+    .img-drop{ padding:22px 14px; }
+    .qr-preview{ width:96px; height:96px; }
+    /* scroll hint so it's obvious the table moves sideways */
+    .panel table{ min-width:640px; }
+  }
+  @media(max-width:400px){
+    .stat-grid{ grid-template-columns:1fr; }
+  }
+  :focus-visible{ outline:2px solid var(--cyan); outline-offset:2px; }
+</style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2565367940576632');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2565367940576632&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel Code -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<div class="mobile-topbar">
+  <div class="side-logo" style="display:flex; align-items:center; gap:10px;">
+    <img class="logo-mark" alt="Vikas Gaming Store">
+    <div class="t">VIKAS GAMING<span>ADMIN PANEL</span></div>
+  </div>
+  <div class="hamburger" onclick="toggleSidebar()">☰</div>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="side-logo" style="text-decoration:none;">
+      <img class="logo-mark" alt="Vikas Gaming Store">
+      <div class="t">VIKAS GAMING<span>ADMIN PANEL</span></div>
+    </a>
+
+
+    <div class="nav-group">
+      <div class="gt">OVERVIEW</div>
+      <div class="nav-item active" onclick="showView('dashboard', this)"><span class="ic">◧</span>Dashboard</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="gt">CATALOG</div>
+      <div class="nav-item" onclick="showView('products', this)"><span class="ic">🎮</span>Products</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="gt">SALES</div>
+      <div class="nav-item" onclick="showView('orders', this)"><span class="ic">📦</span>Orders</div>
+      <div class="nav-item" onclick="showView('payments', this)"><span class="ic">💳</span>Payment Settings</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="gt">STORE</div>
+      <div class="nav-item" onclick="showView('settings', this)"><span class="ic">🏬</span>Store Settings</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="gt">PEOPLE</div>
+      <div class="nav-item" onclick="showView('customers', this)"><span class="ic">👤</span>Customers</div>
+    </div>
+
+    <a href="index.html" class="nav-item" style="margin-top:auto; border-top:1px solid var(--line); border-radius:0; padding-top:14px;"><span class="ic">↗</span>View Store</a>
+    <a onclick="doLogout('admin-login.html')" class="nav-item" style="color:var(--red); cursor:pointer;"><span class="ic">↪</span>Logout</a>
+  </aside>
+
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="v-dashboard">
+      <div class="topbar">
+        <div><h1>Dashboard</h1><div class="sub">Overview for Vikas Gaming Store</div></div>
+        <div class="admin-chip"><span class="dot"></span>Admin · Vikas</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="lbl">TOTAL ORDERS</div><div class="val" id="statOrders">—</div><div class="delta">All time</div></div>
+        <div class="stat-card"><div class="lbl">TOTAL SALES</div><div class="val" id="statSales">—</div><div class="delta">Excludes cancelled</div></div>
+        <div class="stat-card"><div class="lbl">TOTAL CUSTOMERS</div><div class="val" id="statCustomers">—</div><div class="delta">Registered</div></div>
+        <div class="stat-card"><div class="lbl">TOTAL PRODUCTS</div><div class="val" id="statProducts">—</div><div class="delta">In catalog</div></div>
+        <div class="stat-card"><div class="lbl">PENDING ORDERS</div><div class="val" id="statPending">—</div><div class="delta down">Needs action</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Recent Orders</h3><button class="btn" onclick="showView('orders', document.querySelectorAll('.nav-item')[3])">View All</button></div>
+        <table id="recentOrdersTable">
+          <tr><th>ORDER ID</th><th>CUSTOMER</th><th>PRODUCT</th><th>TOTAL</th><th>STATUS</th></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="view" id="v-products">
+      <div class="topbar">
+        <div><h1>Product Management</h1><div class="sub">146 products in catalog</div></div>
+        <button class="btn primary" onclick="resetProductForm()">+ Add Product</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3 id="formTitle">Add New Product</h3></div>
+        <input type="file" id="productImgInput" accept="image/*" multiple style="display:none;" onchange="uploadProductImgs(this)">
+        <div class="img-drop" id="productImgDrop" onclick="document.getElementById('productImgInput').click();">📷 Click to add product photos (up to 4)</div>
+        <div id="imgStrip" class="img-strip"></div>
+        <div id="productImgStatus" style="font-size:12px; color:var(--text-faint); margin:0 0 16px;"></div>
+        <div class="form-grid">
+          <div class="field"><label>PRODUCT NAME</label><input id="f-name" placeholder="e.g. PS5 Disc Edition"></div>
+          <div class="field"><label>CATEGORY</label><select id="f-cat">
+            <option value="playstation_console">PlayStation Console</option>
+            <option value="xbox_console">Xbox Console</option>
+            <option value="controller">Controller</option>
+            <option value="accessory">Accessory</option>
+            <option value="game">Game</option>
+          </select></div>
+          <div class="field"><label>BRAND (OPTIONAL)</label><input id="f-brand" placeholder="e.g. Sony, Microsoft"></div>
+          <div class="field"><label>UNIT / VARIANT</label><input id="f-unit" placeholder="e.g. 825GB, 1 Piece, 1TB"></div>
+          <div class="field"><label>PRICE (₹)</label><input id="f-price" placeholder="38999"></div>
+          <div class="field"><label>DISCOUNT PRICE (₹)</label><input id="f-discount" placeholder="34999"></div>
+          <div class="field"><label>STOCK QUANTITY</label><input id="f-stock" placeholder="12"></div>
+          <div class="field"><label>CONDITION</label><select id="f-cond">
+            <option value="new">New</option>
+            <option value="pre_owned">Pre-Owned</option>
+          </select></div>
+          <div class="field full"><label>DESCRIPTION</label><textarea id="f-desc" placeholder="Product description..."></textarea></div>
+        </div>
+        <div style="margin-top:18px; display:flex; gap:10px;"><button class="btn primary" onclick="saveProduct()" id="saveBtn">Save Product</button><button class="btn" onclick="resetProductForm()">Cancel</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>All Products (<span id="prodCount">0</span>)</h3></div>
+        <table id="productTable">
+          <tr><th>PRODUCT</th><th>CATEGORY</th><th>PRICE</th><th>STOCK</th><th>ACTIONS</th></tr>
+        </table>
+        <div id="productLoading" style="text-align:center; padding:20px; font-size:12.5px; color:var(--text-faint);">Loading products…</div>
+      </div>
+    </section>
+
+
+    <!-- ORDERS -->
+    <section class="view" id="v-orders">
+      <div class="topbar"><div><h1>Order Management</h1><div class="sub" id="orderCountSub">Loading orders…</div></div></div>
+      <div class="panel">
+        <table id="ordersTable">
+          <tr><th>ORDER ID</th><th>CUSTOMER</th><th>ITEMS</th><th>BOOKING FEE</th><th>UTR / PROOF</th><th>STATUS</th><th>ACTIONS</th></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- CUSTOMERS -->
+    <section class="view" id="v-customers">
+      <div class="topbar"><div><h1>Customer Management</h1><div class="sub" id="customerCountSub">Loading customers…</div></div></div>
+      <div class="panel">
+        <table id="customersTable">
+          <tr><th>CUSTOMER</th><th>MOBILE</th><th>ROLE</th></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section class="view" id="v-payments">
+      <div class="topbar"><div><h1>Payment Settings</h1><div class="sub">UPI QR code, UPI ID and booking fee shown at checkout</div></div></div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>UPI QR Code</h3></div>
+        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:16px; line-height:1.7;">
+          Upload the QR code image customers will scan at checkout. It is stored securely and shown on the checkout page.
+        </p>
+        <input type="file" id="qrImgInput" accept="image/*" style="display:none;" onchange="uploadQr(this)">
+        <div style="display:flex; gap:24px; align-items:center; margin-bottom:18px; flex-wrap:wrap;">
+          <div class="qr-preview" id="qrPreviewBox">
+            <span style="font-size:10px; color:var(--text-faint); font-family:'Poppins'; text-align:center; background:#fff; padding:5px 7px; border-radius:4px;">NO QR YET</span>
+          </div>
+          <div style="flex:1; min-width:220px;">
+            <div class="img-drop" style="margin-bottom:0;" onclick="document.getElementById('qrImgInput').click();">Click to upload / replace the UPI QR code image</div>
+            <div id="qrUploadStatus" style="font-size:12px; color:var(--text-faint); margin-top:8px;"></div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="field"><label>UPI ID</label><input id="s-upi-2" placeholder="vikasgamingstore@upi"></div>
+        </div>
+        <div style="margin-top:16px;"><button class="btn primary" onclick="saveUpiIdOnly()" id="upiSaveBtn">Save UPI ID</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Booking Fee</h3></div>
+        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:16px; line-height:1.7;">
+          This amount is paid upfront via UPI to confirm an order. The remaining balance is collected as Cash on Delivery.
+          Change it in <strong style="color:var(--text);">Store Settings</strong> &rarr; Booking Fee.
+        </p>
+        <div id="feeSummary" style="font-size:13px; color:var(--text-dim);">Loading current booking fee…</div>
+      </div>
+    </section>
+
+    <!-- STORE SETTINGS -->
+    <section class="view" id="v-settings">
+      <div class="topbar"><div><h1>Store Settings</h1><div class="sub">WhatsApp number, support contact &amp; timing shown to customers</div></div></div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>WhatsApp &amp; Support</h3></div>
+        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:16px; line-height:1.7;">
+          This WhatsApp number receives payment confirmation messages (with UTR) sent by customers from the checkout page, and is shown in the site footer.
+        </p>
+        <div class="form-grid">
+          <div class="field"><label>WHATSAPP NUMBER</label><input id="s-whatsapp" placeholder="919876543210"></div>
+          <div class="field"><label>CONTACT EMAIL</label><input id="s-email" placeholder="support@vikasgaming.store"></div>
+          <div class="field"><label>CONTACT PHONE</label><input id="s-phone" placeholder="+91 98765 43210"></div>
+          <div class="field"><label>UPI ID</label><input id="s-upi" placeholder="vikasgamingstore@upi"></div>
+          <div class="field"><label>BOOKING FEE TYPE</label><select id="s-fee-type"><option value="fixed">Fixed amount (₹)</option><option value="percent">Percent of order (%)</option></select></div>
+          <div class="field"><label>BOOKING FEE VALUE</label><input id="s-fee" placeholder="500"></div>
+          <div class="field full"><label>STORE ADDRESS</label><input id="s-address" placeholder="Shop address shown to customers"></div>
+        </div>
+        <div style="margin-top:16px;"><button class="btn primary" onclick="saveStoreSettings()" id="settingsSaveBtn">Save Store Settings</button></div>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script>
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function showView(id, el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id === 'orders') loadOrders();
+  if(id === 'products') loadProducts();
+  if(id === 'payments' || id === 'settings') loadStoreSettings();
+  if(id === 'customers') loadCustomers();
+  if(id === 'dashboard') loadDashboardStats();
+  if(window.innerWidth <= 900){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('open');
+  }
+}
+
+/* ---------- Product image upload (gallery, max 4) ---------- */
+const MAX_IMAGES = 4;
+let pendingImages = [];   /* array of public URLs, first one is the cover */
+
+function renderImgStrip(){
+  const strip = document.getElementById('imgStrip');
+  if(pendingImages.length === 0){ strip.innerHTML = ''; return; }
+  strip.innerHTML = pendingImages.map((u, i) => `
+    <div class="img-cell">
+      <img src="${u}" alt="">
+      <button class="rm" onclick="removeProductImg(${i})" title="Remove">✕</button>
+      ${i === 0 ? '<div class="first">COVER</div>' : ''}
+    </div>
+  `).join('');
+  document.getElementById('productImgDrop').innerHTML = pendingImages.length >= MAX_IMAGES
+    ? `Maximum ${MAX_IMAGES} photos added`
+    : `📷 Add more photos (${pendingImages.length}/${MAX_IMAGES})`;
+}
+
+function removeProductImg(i){
+  pendingImages.splice(i, 1);
+  renderImgStrip();
+  document.getElementById('productImgStatus').textContent =
+    'Photo removed. Remember to press Save to apply the change.';
+}
+
+async function uploadProductImgs(input){
+  if(!input.files || input.files.length === 0) return;
+  const status = document.getElementById('productImgStatus');
+  const room = MAX_IMAGES - pendingImages.length;
+
+  if(room <= 0){ status.textContent = `You already have ${MAX_IMAGES} photos. Remove one first.`; input.value=''; return; }
+
+  const files = Array.from(input.files).slice(0, room);
+  if(input.files.length > room){
+    status.textContent = `Only ${room} more photo(s) can be added — the rest were skipped.`;
+  }
+
+  let done = 0;
+  for(const file of files){
+    if(file.size > 5 * 1024 * 1024){
+      status.textContent = `"${file.name}" is larger than 5 MB — please compress it first.`;
+      continue;
+    }
+    status.textContent = `Uploading ${done + 1} of ${files.length}…`;
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `product-${Date.now()}-${Math.random().toString(36).slice(2,7)}-${safeName}`;
+    const { error: upErr } = await sb.storage.from('product-images').upload(path, file);
+    if(upErr){ status.textContent = 'Upload failed: ' + upErr.message; continue; }
+    const { data: pub } = sb.storage.from('product-images').getPublicUrl(path);
+    pendingImages.push(pub.publicUrl);
+    done++;
+  }
+
+  input.value = '';
+  renderImgStrip();
+  if(done > 0){
+    status.textContent = `${done} photo(s) uploaded. The first one is the cover shown on the shop page. Press Save to apply.`;
+  }
+}
+
+/* ---------- Product CRUD ---------- */
+let editingProductId = null;
+let productsCache = [];
+
+async function loadProducts(){
+  const table = document.getElementById('productTable');
+  const loadingEl = document.getElementById('productLoading');
+  loadingEl.style.display = 'block';
+
+  const { data, error } = await sb.from('products').select('*').order('created_at', { ascending: false });
+  table.querySelectorAll('tr:not(:first-child)').forEach(r => r.remove());
+
+  if(error){ loadingEl.textContent = 'Could not load products: ' + error.message; return; }
+  loadingEl.style.display = 'none';
+  productsCache = data;
+
+  data.forEach(p => {
+    const row = document.createElement('tr');
+    const safeName = (p.name || '').replace(/'/g, "\\'");
+    const cover = mainImage(p);
+    const coverCell = cover
+      ? `<img src="${cover}" style="width:40px;height:40px;object-fit:contain;background:#F4F4F7;border-radius:7px;padding:2px;vertical-align:middle;margin-right:8px;" alt="">`
+      : '';
+    row.innerHTML =
+      `<td class="strong">${coverCell}${p.name}${productImages(p).length > 1 ? ` <span style="font-size:10.5px;color:var(--text-faint);">📷${productImages(p).length}</span>` : ''}</td>` +
+      `<td>${CATEGORY_LABELS[p.category] || p.category}</td>` +
+      `<td>${formatINR(p.price)}</td>` +
+      `<td>${p.stock}</td>` +
+      `<td><button class="btn" onclick="editProduct('${p.id}')">Edit</button> <button class="btn" onclick="deleteProduct('${p.id}', '${safeName}')">Delete</button></td>`;
+    table.appendChild(row);
+  });
+  document.getElementById('prodCount').textContent = data.length;
+}
+
+function resetProductForm(){
+  editingProductId = null;
+  pendingImages = [];
+  document.getElementById('formTitle').textContent = 'Add New Product';
+  document.getElementById('saveBtn').textContent = 'Save Product';
+  ['f-name','f-unit','f-price','f-discount','f-stock','f-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-cat').selectedIndex = 0;
+  document.getElementById('f-cond').selectedIndex = 0;
+  document.getElementById('productImgDrop').innerHTML = '📷 Click to add product photos (up to 4)';
+  document.getElementById('productImgStatus').textContent = '';
+  renderImgStrip();
+  document.getElementById('f-name').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function editProduct(id){
+  const p = productsCache.find(x => x.id === id);
+  if(!p) return;
+  editingProductId = p.id;
+  pendingImages = productImages(p);
+  document.getElementById('formTitle').textContent = 'Edit Product — ' + p.name;
+  document.getElementById('saveBtn').textContent = 'Update Product';
+  document.getElementById('f-name').value = p.name;
+  document.getElementById('f-cat').value = p.category;
+  document.getElementById('f-unit').value = p.unit || '';
+  document.getElementById('f-price').value = p.price;
+  document.getElementById('f-discount').value = p.discount_price || '';
+  document.getElementById('f-stock').value = p.stock;
+  document.getElementById('f-cond').value = p.condition;
+  document.getElementById('f-desc').value = p.description || '';
+  document.getElementById('productImgStatus').textContent = '';
+  renderImgStrip();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+async function deleteProduct(id, name){
+  if(!confirm(`Delete "${name}" from the catalog?`)) return;
+  const { error } = await sb.from('products').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
+  loadProducts();
+  loadDashboardStats();
+}
+
+async function saveProduct(){
+  const name = document.getElementById('f-name').value.trim();
+  const category = document.getElementById('f-cat').value;
+  const unit = document.getElementById('f-unit').value.trim();
+  const price = document.getElementById('f-price').value.trim();
+  const discount = document.getElementById('f-discount').value.trim();
+  const stock = document.getElementById('f-stock').value.trim();
+  const condition = document.getElementById('f-cond').value;
+  const description = document.getElementById('f-desc').value.trim();
+
+  if(!name || !price || !stock){
+    alert('Please fill Product Name, Price and Stock Quantity.');
+    return;
+  }
+
+  const payload = {
+    name, category, unit: unit || null,
+    price: Number(price),
+    discount_price: discount ? Number(discount) : null,
+    stock: Number(stock),
+    condition, description: description || null,
+    image_urls: pendingImages,
+    image_url: pendingImages[0] || null,   /* kept in sync for older code paths */
+    is_active: true
+  };
+
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true; saveBtn.textContent = 'Saving...';
+
+  let error;
+  if(editingProductId){
+    ({ error } = await sb.from('products').update(payload).eq('id', editingProductId));
+  } else {
+    ({ error } = await sb.from('products').insert(payload));
+  }
+
+  saveBtn.disabled = false;
+  if(error){
+    alert('Could not save product: ' + error.message);
+    saveBtn.textContent = editingProductId ? 'Update Product' : 'Save Product';
+    return;
+  }
+
+  resetProductForm();
+  loadProducts();
+  loadDashboardStats();
+  alert('Product saved successfully.');
+}
+
+/* ---------- Store Settings (real DB columns) ---------- */
+let settingsCache = null;
+
+async function loadStoreSettings(){
+  const { data, error } = await sb.from('store_settings').select('*').eq('id', 1).single();
+  if(error || !data) return;
+  settingsCache = data;
+
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  set('s-whatsapp', data.whatsapp_number);
+  set('s-email', data.contact_email);
+  set('s-phone', data.contact_phone);
+  set('s-upi', data.upi_id);
+  set('s-upi-2', data.upi_id);
+  set('s-address', data.store_address);
+  set('s-fee', data.booking_fee_value);
+  const feeType = document.getElementById('s-fee-type');
+  if(feeType) feeType.value = data.booking_fee_type || 'fixed';
+
+  const qrBox = document.getElementById('qrPreviewBox');
+  if(qrBox && data.upi_qr_url){
+    qrBox.innerHTML = `<img src="${data.upi_qr_url}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">`;
+  }
+  const feeSummary = document.getElementById('feeSummary');
+  if(feeSummary){
+    feeSummary.textContent = data.booking_fee_type === 'percent'
+      ? `Current booking fee: ${data.booking_fee_value}% of the order total.`
+      : `Current booking fee: ₹${Number(data.booking_fee_value || 0).toLocaleString('en-IN')} per order.`;
+  }
+}
+
+async function saveStoreSettings(){
+  const btn = document.getElementById('settingsSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const payload = {
+    whatsapp_number: document.getElementById('s-whatsapp').value.trim(),
+    contact_email: document.getElementById('s-email').value.trim(),
+    contact_phone: document.getElementById('s-phone').value.trim(),
+    upi_id: document.getElementById('s-upi').value.trim(),
+    store_address: document.getElementById('s-address').value.trim(),
+    booking_fee_type: document.getElementById('s-fee-type').value,
+    booking_fee_value: Number(document.getElementById('s-fee').value) || 0
+  };
+  const { error } = await sb.from('store_settings').update(payload).eq('id', 1);
+  btn.disabled = false; btn.textContent = 'Save Store Settings';
+  if(error){ alert('Could not save: ' + error.message); return; }
+  await loadStoreSettings();
+  alert('Store settings saved successfully.');
+}
+
+async function saveUpiIdOnly(){
+  const btn = document.getElementById('upiSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const { error } = await sb.from('store_settings')
+    .update({ upi_id: document.getElementById('s-upi-2').value.trim() }).eq('id', 1);
+  btn.disabled = false; btn.textContent = 'Save UPI ID';
+  if(error){ alert('Could not save: ' + error.message); return; }
+  await loadStoreSettings();
+  alert('UPI ID saved.');
+}
+
+async function uploadQr(input){
+  if(!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const status = document.getElementById('qrUploadStatus');
+  status.textContent = 'Uploading QR code…';
+
+  const path = `upi-qr-${Date.now()}-${file.name}`;
+  const { error: upErr } = await sb.storage.from('product-images').upload(path, file, { upsert: true });
+  if(upErr){ status.textContent = 'Upload failed: ' + upErr.message; return; }
+
+  const { data: pub } = sb.storage.from('product-images').getPublicUrl(path);
+  const { error } = await sb.from('store_settings').update({ upi_qr_url: pub.publicUrl }).eq('id', 1);
+  if(error){ status.textContent = 'Could not save QR: ' + error.message; return; }
+
+  status.textContent = 'QR code updated — customers will now see it at checkout.';
+  document.getElementById('qrPreviewBox').innerHTML =
+    `<img src="${pub.publicUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">`;
+  await loadStoreSettings();
+}
+
+/* ---------- Orders (real DB columns) ---------- */
+const ADMIN_STATUSES = ['pending_payment','payment_submitted','confirmed','packed','shipped','delivered','cancelled'];
+
+async function loadOrders(){
+  const table = document.getElementById('ordersTable');
+  table.querySelectorAll('tr:not(:first-child)').forEach(r => r.remove());
+  document.getElementById('orderCountSub').textContent = 'Loading orders…';
+
+  const { data, error } = await sb.from('orders').select('*').order('created_at', { ascending: false });
+  if(error){
+    document.getElementById('orderCountSub').textContent = 'Could not load orders: ' + error.message;
+    return;
+  }
+  document.getElementById('orderCountSub').textContent = data.length + ' total orders';
+
+  data.forEach(o => {
+    const row = document.createElement('tr');
+    const items = Array.isArray(o.items) ? o.items : [];
+    const itemsLabel = items.length ? items.map(i => `${i.name} x${i.qty}`).join(', ') : '—';
+
+    const feeHtml = o.utr_number
+      ? `<span class="pill delivered">${formatINR(o.booking_fee_amount)} Paid</span>`
+      : `<span class="pill pending">Awaiting UTR</span>`;
+
+    const options = ADMIN_STATUSES.map(st =>
+      `<option value="${st}" ${o.status === st ? 'selected' : ''}>${ORDER_STATUS_LABELS[st]}</option>`
+    ).join('');
+
+    const proofLink = o.payment_screenshot_url
+      ? ` <a onclick="openProof('${o.payment_screenshot_url}')" style="color:var(--cyan); font-size:11px; cursor:pointer;">view proof</a>`
+      : '';
+
+    row.innerHTML =
+      `<td class="strong mono">${o.order_number}</td>` +
+      `<td>${o.customer_name || '—'}<div style="font-size:11px;color:var(--text-faint);">${o.customer_phone || ''}</div></td>` +
+      `<td style="max-width:220px;">${itemsLabel}<div style="font-size:11px;color:var(--text-faint);">Total ${formatINR(o.total_amount)} · COD ${formatINR(o.remaining_amount)}</div></td>` +
+      `<td>${feeHtml}</td>` +
+      `<td class="mono">${o.utr_number || '—'}${proofLink}</td>` +
+      `<td><select class="status-sel" onchange="updateOrderStatus('${o.id}', this.value)">${options}</select></td>` +
+      `<td><button class="btn" onclick="whatsappCustomer('${o.id}')">💬 WhatsApp</button></td>`;
+    table.appendChild(row);
+  });
+
+  window.ordersCache = data;
+}
+
+async function updateOrderStatus(orderId, newStatus){
+  const { error } = await sb.from('orders')
+    .update({ status: newStatus, updated_at: new Date().toISOString() })
+    .eq('id', orderId);
+  if(error){ alert('Could not update order status: ' + error.message); return; }
+  loadOrders();
+}
+
+/* payment proofs live in a private bucket — open them with a short-lived signed link */
+async function openProof(pathOrUrl){
+  if(/^https?:\/\//.test(pathOrUrl)){ window.open(pathOrUrl, '_blank'); return; }
+  const { data, error } = await sb.storage.from('payment-proofs').createSignedUrl(pathOrUrl, 300);
+  if(error || !data){ alert('Could not open the payment proof: ' + (error ? error.message : 'unknown error')); return; }
+  window.open(data.signedUrl, '_blank');
+}
+
+/* 1-click WhatsApp to the customer with a pre-filled status message */
+function whatsappCustomer(orderId){
+  const o = (window.ordersCache || []).find(x => x.id === orderId);
+  if(!o){ return; }
+  if(!o.customer_phone){ alert('This order has no customer phone number.'); return; }
+
+  const items = Array.isArray(o.items) ? o.items.map(i => `${i.name} x${i.qty}`).join(', ') : '';
+  const msg =
+    `Hi ${o.customer_name || ''}, this is Vikas Gaming Store.\n\n` +
+    `Order: ${o.order_number}\n` +
+    `Items: ${items}\n` +
+    `Total: ${formatINR(o.total_amount)}\n` +
+    `Booking fee received: ${formatINR(o.booking_fee_amount)}\n` +
+    `Balance on delivery: ${formatINR(o.remaining_amount)}\n` +
+    `Current status: ${ORDER_STATUS_LABELS[o.status] || o.status}\n\n` +
+    `Thank you for shopping with us!`;
+
+  window.open(waLink(o.customer_phone, msg), '_blank');
+}
+
+/* ---------- Customers ---------- */
+async function loadCustomers(){
+  const table = document.getElementById('customersTable');
+  if(!table) return;
+  table.querySelectorAll('tr:not(:first-child)').forEach(r => r.remove());
+
+  const { data, error } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+  const sub = document.getElementById('customerCountSub');
+  if(error){ if(sub) sub.textContent = 'Could not load customers: ' + error.message; return; }
+  if(sub) sub.textContent = data.length + ' registered customers';
+
+  data.forEach(c => {
+    const row = document.createElement('tr');
+    const name = c.full_name || 'Customer';
+    const initials = name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    row.innerHTML =
+      `<td><div class="customer-row"><div class="avatar">${initials}</div>${name}</div></td>` +
+      `<td class="mono">${c.phone || '—'}</td>` +
+      `<td>${c.is_admin ? '<span class="pill confirmed">Admin</span>' : '<span class="pill delivered">Customer</span>'}</td>`;
+    table.appendChild(row);
+  });
+}
+
+/* ---------- Dashboard stats ---------- */
+async function loadDashboardStats(){
+  const [ordersRes, productsRes, customersRes] = await Promise.all([
+    sb.from('orders').select('*'),
+    sb.from('products').select('id'),
+    sb.from('profiles').select('id')
+  ]);
+  const orders = ordersRes.data || [];
+  const revenue = orders
+    .filter(o => o.status !== 'cancelled')
+    .reduce((n, o) => n + Number(o.total_amount || 0), 0);
+  const pending = orders.filter(o => o.status === 'pending_payment' || o.status === 'payment_submitted').length;
+
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  set('statOrders', orders.length);
+  set('statSales', formatINR(revenue));
+  set('statCustomers', (customersRes.data || []).length);
+  set('statProducts', (productsRes.data || []).length);
+  set('statPending', pending);
+
+  const recent = document.getElementById('recentOrdersTable');
+  if(recent){
+    recent.querySelectorAll('tr:not(:first-child)').forEach(r => r.remove());
+    orders.slice(0, 5).forEach(o => {
+      const items = Array.isArray(o.items) ? o.items.map(i => i.name).join(', ') : '—';
+      const row = document.createElement('tr');
+      row.innerHTML =
+        `<td class="strong mono">${o.order_number}</td><td>${o.customer_name || '—'}</td>` +
+        `<td>${items}</td><td>${formatINR(o.total_amount)}</td>` +
+        `<td><span class="pill ${ORDER_STATUS_PILL[o.status] || 'pending'}">${ORDER_STATUS_LABELS[o.status] || o.status}</span></td>`;
+      recent.appendChild(row);
+    });
+    if(orders.length === 0){
+      const row = document.createElement('tr');
+      row.innerHTML = '<td colspan="5" style="text-align:center; color:var(--text-faint);">No orders yet.</td>';
+      recent.appendChild(row);
+    }
+  }
+}
+
+/* ---------- Boot: admin gate, then load everything ---------- */
+(async () => {
+  const admin = await requireAdmin();
+  if(!admin) return;
+  loadDashboardStats();
+  loadProducts();
+  loadStoreSettings();
+})();
+</script>
+
+</body>
+</html>
